@@ -5,12 +5,18 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Question_1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="592" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <DataGrid x:Name="StockDataGrid" AutoGenerateColumns="True" Margin="0,45,0,21" />
-        <ComboBox x:Name="SymbolComboBox" HorizontalAlignment="Left" Margin="156,12,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="SymbolComboBox_SelectionChanged"/>
-        <Label Content="Search:" HorizontalAlignment="Left" Margin="96,10,0,0" VerticalAlignment="Top"/>
-        <ProgressBar x:Name="LoadProgressBar" HorizontalAlignment="Center" Height="21" Margin="0,413,0,0" VerticalAlignment="Top" Width="592"/>
+        Title="MainWindow" Height="577" Width="405" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10,0,10,0" Height="517">
+        <DataGrid x:Name="StockDataGrid" AutoGenerateColumns="True" Margin="0,42,0,106" AutoGeneratingColumn="StockDataGrid_AutoGeneratingColumn" />
+        <ComboBox x:Name="SymbolComboBox" HorizontalAlignment="Left" Margin="150,10,0,0" VerticalAlignment="Top" Width="120" SelectionChanged="SymbolComboBox_SelectionChanged"/>
+        <Label Content="Search:" HorizontalAlignment="Left" Margin="82,8,0,0" VerticalAlignment="Top"/>
+        <ProgressBar x:Name="LoadProgressBar" HorizontalAlignment="Center" Height="19" Margin="0,214,0,0" VerticalAlignment="Top" Width="386" Background="{x:Null}" BorderBrush="{x:Null}"/>
+        <Label x:Name="PercentageLabel" Content="" HorizontalAlignment="Center" Margin="0,214,0,0" VerticalAlignment="Top" Height="19" Padding="0,0,0,0"/>
+        <Button x:Name="CalculateBtn" Content="Calculate" HorizontalAlignment="Center" Margin="0,487,0,0" VerticalAlignment="Top" Click="CalculateBtn_Click"/>
+        <Label Content="Result" HorizontalAlignment="Left" Margin="82,448,0,0" VerticalAlignment="Top" Width="68"/>
+        <Label Content="Factorial" HorizontalAlignment="Left" Margin="82,419,0,0" VerticalAlignment="Top" Width="67"/>
+        <TextBox x:Name="FactorialTextBox" HorizontalAlignment="Left" Margin="150,419,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Height="26" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <TextBox x:Name="ResultTextBox" HorizontalAlignment="Left" Margin="150,448,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" IsEnabled="False" Height="26" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
 
         <!--</DataGrid>-->
 

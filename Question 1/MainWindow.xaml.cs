@@ -36,60 +36,59 @@ namespace Question_1
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             IOrderedEnumerable<string> symbols;
-            //LoadProgressBar.IsIndeterminate = true;
-            var loadContent = Task.Run(() => ReadCSV());
-            await loadContent;
+            LoadProgressBar.Minimum = 0;
+            LoadProgressBar.Value = 0;
+
+            await ReadCSV();
+
+            PercentageLabel.Content = "";
+            LoadProgressBar.Value = 0;
 
             symbols = Stocks.Select(s => s.Symbol).Distinct().OrderBy(s => s);
             SymbolComboBox.ItemsSource = symbols;
-            StockDataGrid.ItemsSource = Stocks;
-
-            //var updateUIControls = new Task(() => 
-            //{
-            //});
-
-            ////await loadContent;
+            StockDataGrid.ItemsSource = Stocks.OrderBy(s => s.Date);
         }
 
-        private void ReadCSV()
+        private async Task ReadCSV()
         {
             string filePath = "stockData.csv";
-            //string filePath = "stockDataTest.csv";
-            string[] fields;
+            var lines = File.ReadAllLines(filePath);
 
-            TextFieldParser parser = new TextFieldParser(filePath);
-            parser.HasFieldsEnclosedInQuotes = true;
-            parser.SetDelimiters(",");
-            parser.ReadFields(); // ignores the header
+            LoadProgressBar.Maximum = lines.Length - 1;
 
-            LoadProgressBar.BeginInit();
-
-            while (!parser.EndOfData)
+            for(int i = 1; i < lines.Length; i++)
             {
-                fields = parser.ReadFields();
+                var parser = new TextFieldParser(new StringReader(lines[i]));
 
-                try
-                {
-                    Stock s = new Stock(fields[0],
-                                            DateTime.Parse(fields[1]), //TODO: Show only the date, removing the time
-                                            decimal.Parse(fields[2].Substring(1)),
-                                            decimal.Parse(fields[3].Substring(1)),
-                                            decimal.Parse(fields[4].Substring(1)),
-                                            decimal.Parse(fields[5].Substring(1)));
+                parser.TextFieldType = FieldType.Delimited;
+                parser.HasFieldsEnclosedInQuotes = true;
+                parser.SetDelimiters(",");
 
-                    Stocks = Stocks.Append(s);
-                    //LoadProgressBar.Value ++;
-                }
-                catch (FormatException)
-                {
-                    continue;
-                }
+                string[] fields = parser.ReadFields();
+
+                await Task.Run(() => 
+                { 
+                    try
+                    {
+                        Stock s = new Stock(fields[0],
+                                                DateTime.Parse(fields[1]), //TODO: Show only the date, removing the time
+                                                decimal.Parse(fields[2].Substring(1)), //TODO: Format as curency when displaying
+                                                decimal.Parse(fields[3].Substring(1)),
+                                                decimal.Parse(fields[4].Substring(1)),
+                                                decimal.Parse(fields[5].Substring(1)));
+
+                        Stocks = Stocks.Append(s);
+                    }
+                    catch (FormatException)
+                    {
+                        // the negative values will fall here, as they are inside parentheses
+                    }
+                });
+
+                var percentage = LoadProgressBar.Value / (LoadProgressBar.Maximum - LoadProgressBar.Minimum + 1);
+                PercentageLabel.Content = $"{percentage:P0}";
+                LoadProgressBar.Value ++;
             }
-        }
-
-        private void UpdateStatusBar(int done = 0)
-        {
-            LoadProgressBar.Value = done;
         }
 
         private void SymbolComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -97,6 +96,39 @@ namespace Question_1
             string selectedSymbol = SymbolComboBox.SelectedItem.ToString();
 
             StockDataGrid.ItemsSource = Stocks.Where(s => s.Symbol == selectedSymbol).OrderBy(s => s.Date);
+        }
+
+        private void CalculateBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                int factorial = int.Parse(FactorialTextBox.Text);
+                int result = 1;
+
+                for (int i = 1; i <= factorial; i++)
+                {
+                    result *= i;
+                }
+
+                ResultTextBox.Text = result.ToString();
+            }
+            catch (FormatException)
+            {
+                FactorialTextBox.Text = "Invalid input, enter an integer number";
+                ResultTextBox.Text = "";
+            }
+        }
+
+        private void StockDataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            if (e.PropertyName == "Open" || e.PropertyName == "High" || e.PropertyName == "Low" || e.PropertyName == "Close")
+            {
+                (e.Column as DataGridTextColumn).Binding.StringFormat = "c";
+            }
+            else if(e.PropertyName == "Date")
+            {
+               //(e.Column as DataGridTextColumn).Binding.
+            }
         }
     }
 }
