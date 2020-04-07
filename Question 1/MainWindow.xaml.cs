@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
 using Microsoft.VisualBasic.FileIO;
 
 namespace Question_1
@@ -71,8 +61,8 @@ namespace Question_1
                     try
                     {
                         Stock s = new Stock(fields[0],
-                                                DateTime.Parse(fields[1]), //TODO: Show only the date, removing the time
-                                                decimal.Parse(fields[2].Substring(1)), //TODO: Format as curency when displaying
+                                                fields[1],
+                                                decimal.Parse(fields[2].Substring(1)),
                                                 decimal.Parse(fields[3].Substring(1)),
                                                 decimal.Parse(fields[4].Substring(1)),
                                                 decimal.Parse(fields[5].Substring(1)));
@@ -124,10 +114,6 @@ namespace Question_1
             if (e.PropertyName == "Open" || e.PropertyName == "High" || e.PropertyName == "Low" || e.PropertyName == "Close")
             {
                 (e.Column as DataGridTextColumn).Binding.StringFormat = "c";
-            }
-            else if(e.PropertyName == "Date")
-            {
-               //(e.Column as DataGridTextColumn).Binding.
             }
         }
     }
