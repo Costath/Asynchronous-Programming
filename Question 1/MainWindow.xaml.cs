@@ -116,5 +116,10 @@ namespace Question_1
                 (e.Column as DataGridTextColumn).Binding.StringFormat = "c";
             }
         }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            StockDataGrid.ItemsSource = Stocks.OrderBy(s => s.Date);
+        }
     }
 }
